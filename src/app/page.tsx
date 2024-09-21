@@ -1,5 +1,7 @@
 import Image from "next/image";
 import MaxWidthWrapper from "./components/MaxWidthWrapper";
+import { Check } from "lucide-react";
+
 
 export default function Home() {
   return (
@@ -14,8 +16,35 @@ export default function Home() {
               flex flex-col items-center lg:items-start
               ">
                <div className="absolute w-28 left-0 -top-20 hidden lg:block">
-                <img src="/snake-1.png"/>
+                <img src="/snake-1.png" className="w-full"/>
                </div>
+              <h1 className="relative w-fit tracking-tighter text-balance mt-16 font-bold !leading-tight text-gray-900 text-5xl md:text-6xl lg:text-7xl">Your Image on a <span className="bg-green-600 px-2 text-white">Custom</span> Phone Case</h1>
+              <p className="mt-8 text-lg lg:pr-10 max-w-prose text-center lg:text-left text-balance md:text-wrap ">Capture your favroite memories with you own,{' '}
+    <span className="font-semibold">one-of-one</span> phone case.
+     CaseCobra allows you to protect your memories,not just your phone case.
+
+              </p>
+
+          <ul className="mt-8 space-y-2 text-left font-medium flex flex-col items-center sm:items-start">
+              <div className="space-y-2">
+                <li className="flex gap-1.5 items-center text-left">
+                 <Check className="h-5 w-5 shrink text-green-600"/>
+                  High-qulity,durable material
+                </li>
+                <li className="flex gap-1.5 items-center text-left">
+                 <Check className="h-5 w-5 shrink text-green-600"/>
+                  5 year print gurantee
+                </li>
+                <li className="flex gap-1.5 items-center text-left">
+                 <Check className="h-5 w-5 shrink text-green-600"/>
+                  Modern iPhone models supported
+                </li>
+              </div>
+
+      
+
+          </ul>
+
 
               </div>
 
