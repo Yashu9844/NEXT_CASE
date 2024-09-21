@@ -5,6 +5,7 @@ import MaxWidthWrapper from "./components/MaxWidthWrapper";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { Icons } from "./components/Icons";
+import Reviews from "./components/Reviews";
 
 export default function Home() {
   return (
@@ -155,7 +156,7 @@ export default function Home() {
                   className="rounded-full h-12 w-12 object-cover"
                 />
                 <div className="flex flex-col ">
-                  <p className="font-semibold">Jonathan</p>
+                  <p className="font-semibold">Roshan</p>
                   <div className="flex gap-1.5 items-center text-zinc-600">
                     <Check className="h-4 w-4 stroke-[3px] text-green-600" />
                     <p className="text-sm">Verified Purchase</p>
@@ -190,7 +191,7 @@ export default function Home() {
                   className="rounded-full h-12 w-12 object-cover"
                 />
                 <div className="flex flex-col ">
-                  <p className="font-semibold">Josh</p>
+                  <p className="font-semibold">Hruthik</p>
                   <div className="flex gap-1.5 items-center text-zinc-600">
                     <Check className="h-4 w-4 stroke-[3px] text-green-600" />
                     <p className="text-sm">Verified Purchase</p>
@@ -200,6 +201,9 @@ export default function Home() {
             </div>
           </div>
         </MaxWidthWrapper>
+        <div className="pt-16">
+          <Reviews/>
+        </div>
       </section>
     </div>
   );
