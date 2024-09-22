@@ -1,6 +1,5 @@
 import { createUploadthing, type FileRouter } from "uploadthing/next";
-import { UploadThingError } from "uploadthing/server";
- 
+import { z } from 'zod';
 const f = createUploadthing();
  
 const auth = (req: Request) => ({ id: "fakeId" }); 
@@ -9,25 +8,18 @@ const auth = (req: Request) => ({ id: "fakeId" });
 export const ourFileRouter = {
 
   imageUploader: f({ image: { maxFileSize: "4MB" } })
-  
-    .middleware(async ({ req }) => {
+    .input(z.object({configId:z.string().optional()}))
+    .middleware(async ({ input }) => {
      
-      const user = await auth(req);
+     return {input}
  
     
-      if (!user) throw new UploadThingError("Unauthorized");
- 
     
-      return { userId: user.id };
     })
     .onUploadComplete(async ({ metadata, file }) => {
-
-      console.log("Upload complete for userId:", metadata.userId);
- 
-      console.log("file url", file.url);
- 
+     const {configId} = metadata.input
       
-      return { uploadedBy: metadata.userId };
+      return { configId};
     }),
 } satisfies FileRouter;
  
