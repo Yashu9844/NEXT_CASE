@@ -1,61 +1,52 @@
 import { createUploadthing, type FileRouter } from "uploadthing/next";
-import { z } from 'zod';
-import sharp from 'sharp'
+import { z } from "zod";
+import sharp from "sharp";
 import { db } from "@/db";
 const f = createUploadthing();
- 
-const auth = (req: Request) => ({ id: "fakeId" }); 
- 
+
+const auth = (req: Request) => ({ id: "fakeId" });
 
 export const ourFileRouter = {
-
   imageUploader: f({ image: { maxFileSize: "4MB" } })
-    .input(z.object({configId:z.string().optional()}))
+    .input(z.object({ configId: z.string().optional() }))
     .middleware(async ({ input }) => {
-     
-     return {input}
- 
-    
-    
+      return { input };
     })
+
     .onUploadComplete(async ({ metadata, file }) => {
-     const {configId} = metadata.input
-      
-const res = await fetch(file.url)
-const buffer = await res.arrayBuffer()
+      const { configId } = metadata.input;
 
-const imgMetadata = await sharp(buffer).metadata();
+      const res = await fetch(file.url);
+      const buffer = await res.arrayBuffer();
 
-const {width,height} = imgMetadata
+      const imgMetadata = await sharp(buffer).metadata();
 
-if(!configId){
-  const configuration = await db.configuration.create({
-    data : {
-      imageUrl:file.url,
-      height:height || 500,
-      width: width || 500
-    },
+      const { width, height } = imgMetadata;
 
-    
-  })
+      if (!configId) {
+        const configuration = await db.configuration.create({
+          data: {
+            imageUrl: file.url,
+            height: height || 500,
+            width: width || 500,
+          },
+        });
 
-  return { configId: configuration.id};
+        return { configId: configuration.id };
+      } else {
+        const updateConfiguration = await db.configuration.update({
+          where: {
+            id: configId,
+          },
+          data: {
+            croppedImageUrl: file.url,
+          },
+        });
+        return { configId: updateConfiguration.id };
+      }
 
-}else{
-  const updateConfiguration = await db.configuration.update({
-    where:{
-      id: configId
-    },
-    data:{
-      croppedImageUrl:file.url,
-    }
-  })
-return {configId :updateConfiguration.id}
-}
-
-
-     
+      return { configId };
     }),
 } satisfies FileRouter;
- 
+
 export type OurFileRouter = typeof ourFileRouter;
