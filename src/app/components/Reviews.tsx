@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import MaxWidthWrapper from "./MaxWidthWrapper";
 import {useInView} from 'framer-motion'
 import { cn } from "@/lib/utils";
+import Phone from "./Phone";
 
 const  PHONES =[
     '/testimonials/1.jpg',
@@ -30,53 +31,75 @@ return result
 }
 
 function ReviewColumn({
-    reviews,
-    className,
-    reviewClassName,
-    msPerPixel=0
-}:{
-    reviews: string[],
-    className?: string,
-    reviewClassName?:(reviewIndex:number)=>string,
-    msPerPixel?:number
-}){
-   const columnRef = useRef<HTMLDivElement|null>(null)
-  const [columnHeight, setColumnHeight] =useState(0)
+  reviews,
+  className,
+  reviewClassName,
+  msPerPixel = 0,
+}: {
+  reviews: string[]
+  className?: string
+  reviewClassName?: (reviewIndex: number) => string
+  msPerPixel?: number
+}) {
+  const columnRef = useRef<HTMLDivElement | null>(null)
+  const [columnHeight, setColumnHeight] = useState(0)
   const duration = `${columnHeight * msPerPixel}ms`
-  
-  useEffect(()=>{
-    if(!columnRef.current) return 
-const resizeObs = new window.ResizeObserver(()=>{
-    setColumnHeight(columnRef.current?.offsetHeight ?? 0)
-})
 
-resizeObs.observe(columnRef.current)
+  useEffect(() => {
+    if (!columnRef.current) return
 
+    const resizeObserver = new window.ResizeObserver(() => {
+      setColumnHeight(columnRef.current?.offsetHeight ?? 0)
+    })
 
-return ()=>{
-    resizeObs.disconnect()
-}
-  },[])
+    resizeObserver.observe(columnRef.current)
+
+    return () => {
+      resizeObserver.disconnect()
+    }
+  }, [])
 
   return (
-   
-    <div 
-    ref={columnRef}
-    className={cn('animate-marquee space-y-8 py-4',className)}
-    style={{
-        '--marquee-duration':duration 
-    } as React.CSSProperties}
-    
-    >
-{reviews.concat(reviews).map((imgSrc))}
-
+    <div
+      ref={columnRef}
+      className={cn('animate-marquee space-y-8 py-4', className)}
+      style={{ '--marquee-duration': duration } as React.CSSProperties}>
+      {reviews.concat(reviews).map((imgSrc, reviewIndex) => (
+        <Review
+          key={reviewIndex}
+          className={reviewClassName?.(reviewIndex % reviews.length)}
+          imgSrc={imgSrc}
+        />
+      ))}
     </div>
   )
-
-
+}
+interface ReviewProps extends React.HTMLAttributes<HTMLDivElement> {
+  imgSrc: string;
 }
 
+function Review ({imgSrc,className,...props}:ReviewProps){
 
+ const POSSIBLE_ANIMATION_DELAYS = [
+  '0s',
+
+  '0.1s',
+  '0.2s',
+  '0.3s',
+  '0.4s',
+  '0.5s',
+
+ ]
+
+const animationDelay  = POSSIBLE_ANIMATION_DELAYS[Math.floor(Math.random()*POSSIBLE_ANIMATION_DELAYS.length)]
+
+
+    return <div className={cn('animate-fade-in rounded-[2.25rem] bg-white p-6 opacity-0 shadow-xl shadow-slate-900/5',className)}
+    style={{animationDelay }}
+    {...props}>
+ <Phone imgSrc={imgSrc} />
+    </div>
+}
 
 
 function ReviewGrid() {
@@ -94,8 +117,25 @@ const column1 = columns[0]
     >
    {isInView ? (
     <>
-    <ReviewColumn/>
-    
+    <ReviewColumn reviews={[...column1,...column3.flat(),...column2]} reviewClassName={(reviewIndex)=>cn({
+      "md:hidden":reviewIndex >= column1.length + column3[0].length,
+      'lg:hidden':reviewIndex >= column1.length
+    })}
+    msPerPixel={10}
+    />
+    <ReviewColumn
+            reviews={[...column2, ...column3[1]]}
+            className='hidden md:block'
+            reviewClassName={(reviewIndex) =>
+              reviewIndex >= column2.length ? 'lg:hidden' : ''
+            }
+            msPerPixel={15}
+          />
+     <ReviewColumn
+            reviews={column3.flat()}
+            className='hidden md:block'
+            msPerPixel={10}
+          />
     </>
    ):null}
 
