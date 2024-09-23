@@ -2,6 +2,8 @@
 //bg-zinc-950 border-zinc-950
 //bg-rose-950 border-rose-950
 
+import { PRODUCT_PRICES } from "@/config/products"
+
 
 
 export const COLORS = [
@@ -14,3 +16,77 @@ export const COLORS = [
         label:"Rose", value:'rose',tw:'rose-950',
     }
 ] as const 
+
+
+export const MODELS = {
+    name:"models",
+    option:[
+        {
+            label:"iPhone X",
+            value:"iphonex",
+        },
+        {
+            label:"iPhone 11",
+            value:"iphone11",
+        },
+        {
+            label:"iPhone 12",
+            value:"iphone12",
+        },
+        {
+            label:"iPhone 13",
+            value:"iphone13",
+        },
+        {
+            label:"iPhone 14",
+            value:"iphone14",
+        },
+        {
+            label:"iPhone 15",
+            value:"iphone15",
+        },
+        {
+            label:"iPhone 16",
+            value:"iphone16",
+        },
+    ]
+} as const 
+
+
+export const MATERIALS = {
+    name:"material",
+    options:[
+        {
+            label:"Silicone",
+            value:"Silicone",
+            description:undefined,
+            price:PRODUCT_PRICES.material.silicone
+        },
+        {
+            label:"Soft Polycaarbonate",
+            value:"polycarbonate",
+            description:"Scratch-resistance coating",
+            price:PRODUCT_PRICES.material.polycarbonate
+        },
+    ]
+
+}as const 
+export const FINISHES = {
+    name:"finish",
+    options:[
+        {
+            label:"Smooth Finish",
+            value:"smooth",
+            description:undefined,
+            price:PRODUCT_PRICES.finish.smooth
+        },
+        {
+            label:"Texture Finish",
+            value:"textured",
+            description:"Soft grippy  Texture Finish",
+            price:PRODUCT_PRICES.finish.texture
+        },
+    ]
+
+}as const 
+
