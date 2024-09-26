@@ -1,7 +1,8 @@
 "use client"
 
 import Phone from "@/app/components/Phone";
-import { cn } from "@/lib/utils";
+import { BASE_PRICE } from "@/config/products";
+import { cn, formatPrice } from "@/lib/utils";
 import { COLORS, MODELS } from "@/validators/option-validator";
 import { Configuration } from "@prisma/client";
 import { Check } from "lucide-react";
@@ -53,6 +54,18 @@ const {label:modelLabel} = MODELS.option.find(({value})=>value === model)!
         <li>High-quality, durable material</li>
         <li>Scratch- and fingerprint resistant coating</li>
       </ol>
+    </div>
+  </div>
+  <div className="mt-8">
+    <div className="bg-gray-50 p-6 sm:rounded-lg sm:p-8">
+      <div className="flow-root text-sm">
+        <div className="flex items-center justify-between py-1 mt-2">
+          <p className="text-gray-600">Base Price</p>
+          <p className="font-semibold text-gray-900 ">
+                   {formatPrice(BASE_PRICE)}
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 </div>
