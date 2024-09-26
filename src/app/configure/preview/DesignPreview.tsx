@@ -1,11 +1,12 @@
 "use client"
 
 import Phone from "@/app/components/Phone";
-import { BASE_PRICE } from "@/config/products";
+import { Button } from "@/components/ui/button";
+import { BASE_PRICE, PRODUCT_PRICES } from "@/config/products";
 import { cn, formatPrice } from "@/lib/utils";
-import { COLORS, MODELS } from "@/validators/option-validator";
+import { COLORS, FINISHES, MODELS } from "@/validators/option-validator";
 import { Configuration } from "@prisma/client";
-import { Check } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
 import { useEffect, useState } from "react";
 import Confetti from "react-dom-confetti"
 
@@ -15,10 +16,19 @@ const [showConfetti,setShowConfetti] = useState(false)
 
 useEffect(() =>setShowConfetti(true))
 
-const {color ,model} = configuration
+const {color ,model,finish,material} = configuration
 
 const tw = COLORS.find((supportedColor)=> supportedColor.value === color)?.tw
 const {label:modelLabel} = MODELS.option.find(({value})=>value === model)!
+
+let totalPrice = BASE_PRICE 
+if(material === "polycarbonate" ){totalPrice += PRODUCT_PRICES.material.polycarbonate}
+
+if (finish === "textured") {
+  totalPrice += PRODUCT_PRICES.finish.texture;
+
+}
+
 
   return (
    <>
@@ -65,8 +75,31 @@ const {label:modelLabel} = MODELS.option.find(({value})=>value === model)!
                    {formatPrice(BASE_PRICE)}
           </p>
         </div>
+{finish === "textured" ? ( <div className="flex items-center justify-between py-1 mt-2">
+          <p className="text-gray-600">Textured Finished</p>
+          <p className="font-semibold text-gray-900 ">
+                   {formatPrice(FINISHES.options[1].price)}
+          </p>
+        </div>) : null}
+{material === "polycarbonate" ? ( <div className="flex items-center justify-between py-1 mt-2">
+          <p className="text-gray-600">Soft polycarbonate material</p>
+          <p className="font-semibold text-gray-900 ">
+                   {formatPrice(PRODUCT_PRICES.material.polycarbonate)}
+          </p>
+        </div>) : null}
+            <div className="my-2 h-px bg-gray-200"/>
+          <div className="flex items-center justify-between py-2">
+            <p className="font-semibold text-gray-900">Order total</p>
+            <p className="font-semibold text-gray-900">
+              {formatPrice(totalPrice)}
+            </p>
+
+          </div>
       </div>
     </div>
+  </div>
+  <div className="mt-8 flex justify-end pb-12">
+    <Button className="px-4 sm:px-6 lg:px-8">Check out <ArrowRight className="h-4 w-4 ml-1.15"/></Button>
   </div>
 </div>
           
