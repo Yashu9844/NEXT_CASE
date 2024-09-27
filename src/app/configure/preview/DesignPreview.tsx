@@ -6,6 +6,7 @@ import { BASE_PRICE, PRODUCT_PRICES } from "@/config/products";
 import { cn, formatPrice } from "@/lib/utils";
 import { COLORS, FINISHES, MODELS } from "@/validators/option-validator";
 import { Configuration } from "@prisma/client";
+import { useMutation } from "@tanstack/react-query";
 import { ArrowRight, Check } from "lucide-react";
 import { useEffect, useState } from "react";
 import Confetti from "react-dom-confetti"
@@ -26,8 +27,13 @@ if(material === "polycarbonate" ){totalPrice += PRODUCT_PRICES.material.polycarb
 
 if (finish === "textured") {
   totalPrice += PRODUCT_PRICES.finish.texture;
-
 }
+
+const {} = useMutation({
+     mutationKey:["get-checkouts-session"],
+     mutationFn:
+})
+
 
 
   return (
@@ -99,7 +105,7 @@ if (finish === "textured") {
     </div>
   </div>
   <div className="mt-8 flex justify-end pb-12">
-    <Button className="px-4 sm:px-6 lg:px-8">Check out <ArrowRight className="h-4 w-4 ml-1.15"/></Button>
+    <Button disabled={true} isLoading={true} loadingText="loading" className="px-4 sm:px-6 lg:px-8">Check out <ArrowRight className="h-4 w-4 ml-1.15 inline"/></Button>
   </div>
 </div>
           
