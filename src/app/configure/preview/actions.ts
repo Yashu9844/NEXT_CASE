@@ -5,89 +5,78 @@ import { db } from "@/db"
 import { stripe } from "@/lib/stripe"
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server"
 import { Order } from "@prisma/client"
-
-export const createCheckoutSession = async ({ configId }: { configId: string }) => {
-  // Retrieve the configuration based on the provided configId
+export const createCheckoutSession = async ({
+  configId,
+}: {
+  configId: string
+}) => {
   const configuration = await db.configuration.findUnique({
     where: { id: configId },
-  });
+  })
 
-  // Check if the configuration exists
   if (!configuration) {
-    throw new Error("Configuration not found");
+    throw new Error('No such configuration found')
   }
 
-  // Get the current user session
-  const { getUser } = getKindeServerSession();
-  const user = await getUser();
+  const { getUser } = getKindeServerSession()
+  const user = await getUser()
 
-  // Ensure the user is logged in
   if (!user) {
-    throw new Error("User not logged in");
+    throw new Error('You need to be logged in')
   }
 
-  // Calculate the price based on the configuration
-  const { finish, material } = configuration;
-  let price = BASE_PRICE;
+  const { finish, material } = configuration
 
-  // Adjust price based on material and finish
-  if (finish === "textured") {
-    price += PRODUCT_PRICES.finish.texture;
-  }
-  if (material === "polycarbonate") {
-    price += PRODUCT_PRICES.material.polycarbonate;
-  }
+  let price = BASE_PRICE
+  if (finish === 'textured') price += PRODUCT_PRICES.finish.texture
+  if (material === 'polycarbonate')
+    price += PRODUCT_PRICES.material.polycarbonate
 
-  // Check for an existing order for this user and configuration
-  let order: Order | undefined;
+  let order: Order | undefined = undefined
+
   const existingOrder = await db.order.findFirst({
     where: {
       userId: user.id,
       configurationId: configuration.id,
     },
-  });
+  })
 
-  // If an existing order is found, use it; otherwise, create a new one
+  console.log(user.id, configuration.id)
+
   if (existingOrder) {
-    order = existingOrder;
+    order = existingOrder
   } else {
-    // Create a new order
     order = await db.order.create({
       data: {
+        amount: price / 100,
         userId: user.id,
         configurationId: configuration.id,
-        amount: price,
-        // Add any other required fields for the Order model here
       },
-    }).catch((error) => {
-      console.error("Error creating order:", error);
-      throw new Error("Failed to create order. Please try again.");
-    });
+    })
   }
 
-  // Create a product in Stripe
   const product = await stripe.products.create({
-    name: "Custom iPhone Case",
+    name: 'Custom iPhone Case',
     images: [configuration.imageUrl],
     default_price_data: {
-      currency: "INR",
-      unit_amount: price * 100, // Convert price to the smallest currency unit
+      currency: 'INR',
+      unit_amount: price * 100,
     },
-  });
+  })
 
-  // Create a Stripe checkout session
   const stripeSession = await stripe.checkout.sessions.create({
     success_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/thank-you?orderId=${order.id}`,
     cancel_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/configure/preview?id=${configuration.id}`,
-    payment_method_types: ["card", "paypal", "amazon_pay"],
-    mode: "payment",
-    shipping_address_collection: { allowed_countries: ["US", "IN", "DE"] },
+    payment_method_types: ['card'],
+    mode: 'payment',
+    shipping_address_collection: { allowed_countries: ['DE', 'US','IN'] },
     metadata: {
       userId: user.id,
       orderId: order.id,
     },
     line_items: [{ price: product.default_price as string, quantity: 1 }],
-  });
-
-  return { url: stripeSession.url };
+  })
+  // console.log('Stripe Session:', stripeSession);
+ console.log(stripeSession.url)
+  return {url : stripeSession.url}
 }

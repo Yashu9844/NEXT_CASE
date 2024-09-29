@@ -34,29 +34,73 @@ if (finish === "textured") {
 
 const {toast} = useToast()
 
-const {mutate:createPaymentSession} = useMutation({
-     mutationKey:["get-checkouts-session"],
-     mutationFn:createCheckoutSession,
-     onSuccess:({url}) => {
-      if(url){
-        router.push(url)
-       
-      }else{
-        throw new Error("Unable to retrive payment URL")
-      }
-     },
-     onError: () =>{
+// const { mutate: createPaymentSession } = useMutation({
+//   mutationKey: ['get-checkout-session'],
+//   mutationFn: createCheckoutSession,
+//   onSuccess: ({ url }) => {
+//     if (url) router.push(url)
+//     else throw new Error('Unable to retrieve payment URL.')
+//   },
+//   onError: () => {
+//     toast({
+//       title: 'Something went wrong',
+//       description: 'There was an error on our end. Please try again.',
+//       variant: 'destructive',
+//     })
+//   },
+// })
+const [loading , setLoading] = useState(false)
+// const handleCheckout = async () => {
+//   setLoading(true);
+
+//   try {
+//     // Call your createCheckoutSession function
+//     const {url}= await createCheckoutSession({configId: configuration.id});
+//      console.log(url)
+//     if (url) {
+//       // Redirect to the Stripe checkout page
+//       router.push(url);
+//     } else {
+//       console.error('No checkout URL returned');
+//       alert('Failed to retrieve checkout URL.');
+//     }
+//   } catch (error) {
+//     console.error('Error during checkout:', error);
+//     alert('An error occurred during checkout. Please try again.');
+//   } finally {
+//     setLoading(false);
+//   }
+// };
+const mutation = useMutation({
+  mutationKey: ['get-checkout-session'],
+  mutationFn: async () => {
+    const { url } = await createCheckoutSession({ configId: configuration.id });
+    return url; // This is where you return the URL to be used in onSuccess
+  },
+  onSuccess: (url) => {
+    if (url) {
+      router.push(url); // Redirect to the Stripe checkout page
+    } else {
       toast({
-        title: "Error",
-        description: "Failed to create checkout session. Please try again later.",
-        variant: "destructive",
-      })
-     } 
-     
-   
-})
+        title: 'Error',
+        description: 'No checkout URL returned.',
+        variant: 'destructive',
+      });
+    }
+  },
+  onError: (error) => {
+    console.error('Mutation Error:', error);
+    toast({
+      title: 'Something went wrong',
+      description: 'There was an error on our end. Please try again.',
+      variant: 'destructive',
+    });
+  },
+});
 
-
+const handleCheckout = () => {
+  mutation.mutate(); // This will trigger the mutation
+}
 
   return (
    <>
@@ -127,7 +171,11 @@ const {mutate:createPaymentSession} = useMutation({
     </div>
   </div>
   <div className="mt-8 flex justify-end pb-12">
-    <Button onClick={()=>createCheckoutSession({configId:configuration.id})}   className="px-4 sm:px-6 lg:px-8">Check out <ArrowRight className="h-4 w-4 ml-1.15 inline"/></Button>
+    <Button onClick={
+        
+        handleCheckout
+        
+        }   className="px-4 sm:px-6 lg:px-8">Check out <ArrowRight className="h-4 w-4 ml-1.15 inline"/></Button>
   </div>
 </div>
           
