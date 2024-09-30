@@ -77,6 +77,6 @@ export const createCheckoutSession = async ({
     line_items: [{ price: product.default_price as string, quantity: 1 }],
   })
   // console.log('Stripe Session:', stripeSession);
- console.log(stripeSession.url)
+ 
   return {url : stripeSession.url}
 }
