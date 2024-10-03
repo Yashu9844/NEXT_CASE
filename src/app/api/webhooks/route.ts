@@ -51,7 +51,7 @@ export async function POST(req:Request){
                   }
                 }
             }
-          }),
+          })
           await  db.order.update({
             where:{id:orderId},
             data:{
