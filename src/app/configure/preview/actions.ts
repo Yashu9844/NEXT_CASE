@@ -54,6 +54,9 @@ export const createCheckoutSession = async ({
       },
     })
   }
+  if (!order) {
+    throw new Error('Order not found or created');
+  }
 
   const product = await stripe.products.create({
     name: 'Custom iPhone Case',
