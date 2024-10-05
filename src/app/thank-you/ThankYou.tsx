@@ -40,7 +40,7 @@ if(data === false){
     return <div className="w-dull mt-24 flex justify-center"  >
     <div className="flex flx-col items-center gap-2">
         <Loader2 className="h-8 w-8 text-zinc-500 animate-spin" />
-        <h3 className="font-semibold text-xl" >Verifying you payment....</h3>
+        <h3 className="font-semibold text-xl" >Verifying you payment...</h3>
         <p>This might  take a moment.</p>
     </div>
 </div>
