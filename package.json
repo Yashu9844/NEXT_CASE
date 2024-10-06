@@ -38,6 +38,7 @@
     "react-dropzone": "^14.2.3",
     "react-query": "^3.39.3",
     "react-rnd": "^10.4.13",
+    "resend": "^4.0.0",
     "sharp": "^0.32.6",
     "stripe": "^16.12.0",
     "tailwind-merge": "^2.5.2",
