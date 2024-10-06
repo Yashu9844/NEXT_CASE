@@ -54,7 +54,8 @@ export function constructMetaData ({
       ],
 
     },
-    icons
+    icons,
+    metadataBase:new URL("https://next-case-seven.vercel.app/")
    
   }
 }
