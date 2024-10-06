@@ -43,7 +43,7 @@ useEffect(()=>{
     left:renderedDimension.width/2 - renderedDimension.width / (1216 / 121),
     top:renderedDimension.height / 6.22,
 }} >
-<img  width={renderedDimension.width / (3000 / 637)} src={croppedImageUrl} alt="Phone" className={cn("phone-skew relative z-20 rounded-b-[10px] md:rounded-t-[30px] md:rounded-b-[20px]",
+<img  width={renderedDimension.width / (3000 / 637)} src={croppedImageUrl} alt="Phone" className={cn("phone-skew relative z-20 rounded-t-[15px] rounded-b-[10px]  md:rounded-t-[30px] md:rounded-b-[20px]",
     caseBackgroundColor
 )}  />
 
