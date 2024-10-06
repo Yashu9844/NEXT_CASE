@@ -78,7 +78,7 @@ export async function POST(req: Request) {
                react: OrderReceivedEmail({
                  orderId,
                  orderDate: updatedOrder.createdAt.toLocaleDateString(),
-                 // @ts-expect-error
+                // @ts-expect-error: Stripe types do not match our internal email template, but fields exist
                  shippingAddress: {
                    name: session.customer_details!.name!,
                    city: shippingAddress!.city!,
